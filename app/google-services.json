@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "229716069094",
+    "firebase_url": "https://travelon-56124.firebaseio.com",
+    "project_id": "travelon-56124",
+    "storage_bucket": "travelon-56124.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229716069094:android:259bf9c53f7f7cea4f8927",
+        "android_client_info": {
+          "package_name": "com.example.travelon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "229716069094-is1narih3puui811alk1pj3ird05ot9j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.travelon",
+            "certificate_hash": "7e9ba14e7613cd50f7de60f7249da0816c023bb7"
+          }
+        },
+        {
+          "client_id": "229716069094-sj0vppo10pbah0mqnpg5nfehmon0lopj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmU-9AemGlbCN0RpfqNr_g6jjHMqJ4edA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "229716069094-sj0vppo10pbah0mqnpg5nfehmon0lopj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
