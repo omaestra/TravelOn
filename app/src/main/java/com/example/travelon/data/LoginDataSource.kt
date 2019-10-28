@@ -10,6 +10,8 @@ import java.io.IOException
  */
 class LoginDataSource {
 
+    private var firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
+
     fun login(username: String, password: String): Result<LoggedInUser> {
         try {
             // TODO: handle loggedInUser authentication
@@ -21,11 +23,25 @@ class LoginDataSource {
     }
 
     fun logout() {
-        // TODO: revoke authentication
+        FirebaseAuth.getInstance().signOut()
     }
 
     fun firebaseLogin(username: String, password: String, completionHandler: (Result<FirebaseUser>) -> Unit) {
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(username, password)
+        firebaseAuth.signInWithEmailAndPassword(username, password)
+            .addOnCompleteListener {
+                if (!it.isSuccessful) {
+                    completionHandler(Result.Error(IOException("Error logging in")))
+                    return@addOnCompleteListener
+                } else {
+                    val user = it.result?.user ?: return@addOnCompleteListener
+
+                    completionHandler(Result.Success(user))
+                }
+            }
+    }
+
+    fun firebaseRegister(username: String, password: String, completionHandler: (Result<FirebaseUser>) -> Unit) {
+        firebaseAuth.createUserWithEmailAndPassword(username, password)
             .addOnCompleteListener {
                 if (!it.isSuccessful) {
                     completionHandler(Result.Error(IOException("Error logging in")))

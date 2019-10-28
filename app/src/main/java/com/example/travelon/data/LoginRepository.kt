@@ -1,10 +1,7 @@
 package com.example.travelon.data
 
-import android.util.Log
 import com.example.travelon.data.model.LoggedInUser
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import java.nio.channels.CompletionHandler
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -12,8 +9,6 @@ import java.nio.channels.CompletionHandler
  */
 
 class LoginRepository(val dataSource: LoginDataSource) {
-
-    private lateinit var auth: FirebaseAuth
 
     // in-memory cache of the loggedInUser object
     var user: LoggedInUser? = null
@@ -23,7 +18,6 @@ class LoginRepository(val dataSource: LoginDataSource) {
         get() = user != null
 
     init {
-        auth = FirebaseAuth.getInstance()
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
         user = null
@@ -46,8 +40,20 @@ class LoginRepository(val dataSource: LoginDataSource) {
     }
 
     fun firebaseLogin(username: String, password: String, completionHandler: (Result<FirebaseUser>) -> Unit) {
-        dataSource.firebaseLogin(username, password) { result ->
-            completionHandler(result)
+        dataSource.firebaseLogin(username, password) {
+            if (it is Result.Success) {
+                user = it.data.displayName?.let { it1 -> LoggedInUser( it.data.uid, it1) }
+            }
+            completionHandler(it)
+        }
+    }
+
+    fun firebaseRegister(username: String, password: String, completionHandler: (Result<FirebaseUser>) -> Unit) {
+        dataSource.firebaseRegister(username, password) {
+            if (it is Result.Success) {
+                user = it.data.displayName?.let { it1 -> LoggedInUser( it.data.uid, it1) }
+            }
+            completionHandler(it)
         }
     }
 

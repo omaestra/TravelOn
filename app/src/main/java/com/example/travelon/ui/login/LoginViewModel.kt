@@ -14,8 +14,6 @@ import com.google.firebase.auth.FirebaseUser
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 
-    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
-
     private val _loginForm = MutableLiveData<LoginFormState>()
     val loginFormState: LiveData<LoginFormState> = _loginForm
 
@@ -24,6 +22,19 @@ class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel()
 
     fun firebaseLogin(username: String, password: String) {
         loginRepository.firebaseLogin(username, password) { result ->
+            if (result is Result.Success) {
+                val user = result.data
+
+                _loginResult.value =
+                    LoginResult(success = user.email?.let { it1 -> LoggedInUserView(it1) })
+            } else {
+                _loginResult.value = LoginResult(error = R.string.login_failed)
+            }
+        }
+    }
+
+    fun firebaseRegister(username: String, password: String, confirmPassword: String) {
+        loginRepository.firebaseRegister(username, password) { result ->
             if (result is Result.Success) {
                 val user = result.data
 
