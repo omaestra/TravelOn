@@ -18,4 +18,5 @@
     <string name="title_favourites">Favorites</string>
     <string name="title_add_site">Add site</string>
     <string name="title_about">Acerca de</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

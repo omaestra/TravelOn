@@ -17,7 +17,7 @@
         android:title="@string/title_add_site" />
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_about"
         android:icon="@mipmap/ic_about_foreground"
         android:title="@string/title_about" />
 

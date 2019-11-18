@@ -20,6 +20,7 @@ import com.example.travelon.R
 import com.example.travelon.MainActivity
 import com.example.travelon.utils.afterTextChanged
 
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
 
@@ -27,13 +28,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Check if User is already Logged In.
-//        if (FirebaseAuth.getInstance().currentUser != null) {
-//            val intent = Intent(applicationContext, MainActivity::class.java)
-//            startActivity(intent)
-//            finish()
-//        }
 
         setContentView(R.layout.activity_login)
 
@@ -50,6 +44,13 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel = ViewModelProviders.of(this, LoginViewModelFactory())
             .get(LoginViewModel::class.java)
+
+        // Check if User is already Logged In.
+        if (loginViewModel.isUserLoggedIn()) {
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         loginViewModel.loginFormState.observe(this@LoginActivity, Observer {
             val loginState = it ?: return@Observer
