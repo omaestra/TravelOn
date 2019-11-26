@@ -8,15 +8,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelon.R
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.favourite_place_row.view.*
 import kotlinx.android.synthetic.main.place_row.view.*
+import kotlinx.android.synthetic.main.place_row.view.createPlaceButton
+import kotlinx.android.synthetic.main.place_row.view.placeCityText
+import kotlinx.android.synthetic.main.place_row.view.placeCountryText
+import kotlinx.android.synthetic.main.place_row.view.placeImageView
+import kotlinx.android.synthetic.main.place_row.view.placeNameText
 
-typealias SelectPlaceClickListener = (View, TOPlace) -> Unit
-
-class PlacesAdapter(
+class GooglePlacesAdapter(
     private val recyclerView: RecyclerView,
     private val onClickListener: SelectPlaceClickListener,
-    private val onFavouriteClickListener: SelectPlaceClickListener?): RecyclerView.Adapter<PlacesAdapter.ViewHolder>() {
-    //private val mContext: Context = context
+    private val onCreatePlaceClickListener: SelectPlaceClickListener?): RecyclerView.Adapter<GooglePlacesAdapter.ViewHolder>() {
 
     val places = ArrayList<TOPlace>()
 
@@ -29,13 +32,13 @@ class PlacesAdapter(
     }
 
     //this method is returning the view for each item in the list
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacesAdapter.ViewHolder {
-        val v = LayoutInflater.from(recyclerView.context).inflate(R.layout.place_row, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val v = LayoutInflater.from(recyclerView.context).inflate(R.layout.favourite_place_row, parent, false)
         return ViewHolder(v)
     }
 
     //this method is binding the data on the list
-    override fun onBindViewHolder(holder: PlacesAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val place = this.places[position]
 
         holder.bindItems(place)
@@ -44,8 +47,8 @@ class PlacesAdapter(
             onClickListener(view, place)
         }
 
-        holder.itemView.button_favorite.setOnClickListener { view ->
-            onFavouriteClickListener?.invoke(view, place)
+        holder.itemView.createPlaceButton.setOnClickListener { view ->
+            onCreatePlaceClickListener?.invoke(view, place)
         }
     }
 
@@ -62,10 +65,10 @@ class PlacesAdapter(
             itemView.placeNameText.text = place.name
             itemView.placeCityText.text = place.formatted_address
             itemView.placeCountryText.text = place.formatted_address
-            itemView.button_favorite.isChecked = place.favourite
 
             place.photos?.first()?.photo_reference.let {
-                var imageUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${it}&key=$ApiKey"
+                var imageUrl =
+                    "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${it}&key=$ApiKey"
 
                 Picasso.get()
                     .load(imageUrl)

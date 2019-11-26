@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.travelon.ui.dashboard.DashboardFragment"
+        android:name="com.example.travelon.ui.favourites.FavouritesFragment"
         android:label="@string/title_favourites"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_favourites" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.travelon.ui.notifications.NotificationsFragment"
+        android:name="com.example.travelon.ui.createSite.CreateSiteFragment"
         android:label="@string/title_add_site" />
     <fragment
         android:id="@+id/navigation_about"
