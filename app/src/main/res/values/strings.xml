@@ -19,4 +19,8 @@
     <string name="title_add_site">Add site</string>
     <string name="title_about">Acerca de</string>
     <string name="sign_out">Sign Out</string>
+    <string name="search_title">Search</string>
+    <string name="search_hint">Enter text to search</string>
+    <string name="no_data_available">Nothing to show here</string>
+    <string name="create_place">Crear sitio</string>
 </resources>
