@@ -1,6 +1,6 @@
 package com.example.travelon.ui.adapters
 
-import TOPlace
+import com.example.travelon.data.model.TOPlace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelon.R
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.favourite_place_row.view.*
-import kotlinx.android.synthetic.main.place_row.view.*
 import kotlinx.android.synthetic.main.place_row.view.createPlaceButton
 import kotlinx.android.synthetic.main.place_row.view.placeCityText
 import kotlinx.android.synthetic.main.place_row.view.placeCountryText
@@ -33,7 +31,7 @@ class GooglePlacesAdapter(
 
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val v = LayoutInflater.from(recyclerView.context).inflate(R.layout.favourite_place_row, parent, false)
+        val v = LayoutInflater.from(recyclerView.context).inflate(R.layout.google_place_row, parent, false)
         return ViewHolder(v)
     }
 

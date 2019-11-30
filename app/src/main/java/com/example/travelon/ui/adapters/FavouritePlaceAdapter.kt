@@ -1,6 +1,6 @@
 package com.example.travelon.ui.adapters
 
-import TOPlace
+import com.example.travelon.data.model.TOPlace
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

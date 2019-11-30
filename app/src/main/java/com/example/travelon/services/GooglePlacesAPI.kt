@@ -1,6 +1,7 @@
 package com.example.travelon.services
 
 import com.example.travelon.data.model.PlaceApiResponse
+import com.example.travelon.data.model.TOPlace
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -13,7 +14,13 @@ public interface GooglePlacesAPI {
         @Query("region") region: String,
         @Query("language") language: String,
         @Query("key") apiKey: String
-    ): Call<PlaceApiResponse>
+    ): Call<PlaceApiResponse<List<TOPlace>>>
+
+    @GET("place/details/json")
+    fun getPlace(
+        @Query("place_id") placeId: String,
+        @Query("key") apiKey: String
+    ): Call<PlaceApiResponse<TOPlace>>
 
     @GET("place/photo")
     fun getPhoto(

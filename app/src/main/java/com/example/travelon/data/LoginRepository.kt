@@ -1,7 +1,12 @@
 package com.example.travelon.data
 
+import android.content.ContentValues.TAG
+import android.net.Uri
+import android.util.Log
 import com.example.travelon.data.model.LoggedInUser
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
+import java.io.IOException
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -52,8 +57,22 @@ class LoginRepository(val dataSource: LoginDataSource) {
         dataSource.firebaseRegister(username, password) {
             if (it is Result.Success) {
                 user = it.data.displayName?.let { it1 -> LoggedInUser( it.data.uid, it1) }
+
+                val profileUpdates = UserProfileChangeRequest.Builder()
+                    .setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
+                    .build()
+
+                it.data.updateProfile(profileUpdates).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "User profile updated.")
+                    }
+                }
+
+                completionHandler(it)
+            } else {
+                completionHandler(Result.Error(IOException("Error logging in")))
             }
-            completionHandler(it)
+
         }
     }
 

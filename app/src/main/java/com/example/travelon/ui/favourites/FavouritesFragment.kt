@@ -1,6 +1,6 @@
 package com.example.travelon.ui.favourites
 
-import TOPlace
+import com.example.travelon.data.model.TOPlace
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.os.Bundle

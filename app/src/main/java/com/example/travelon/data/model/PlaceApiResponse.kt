@@ -1,10 +1,9 @@
 package com.example.travelon.data.model
 
-import TOPlace
+import com.google.gson.annotations.SerializedName
 
-data class PlaceApiResponse (
-
-	val html_attributions : List<String>,
-	val results : List<TOPlace>,
-	val status : String
+data class PlaceApiResponse<T> (
+    @SerializedName("html_attributions") val html_attributions : List<String>,
+    @SerializedName("results", alternate = ["result"])  val results : T,
+    @SerializedName("status")  val status : String
 )

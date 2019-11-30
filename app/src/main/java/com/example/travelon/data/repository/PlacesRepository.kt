@@ -1,21 +1,16 @@
 package com.example.travelon.data.repository
 
-import TOPlace
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.example.travelon.data.model.PlaceApiResponse
+import com.example.travelon.data.model.Review
+import com.example.travelon.data.model.TOPlace
 import com.example.travelon.services.GooglePlacesAPI
 import com.example.travelon.services.RetrofitService
 import com.google.firebase.database.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.ValueEventListener
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 
 
 class PlacesRepository {
@@ -28,7 +23,7 @@ class PlacesRepository {
     }
 
     private var googlePlacesApi: GooglePlacesAPI? = null
-    private lateinit var database: DatabaseReference
+    private var database: DatabaseReference
 
     private val ApiKey = "AIzaSyBla0a-Mh6b3Vr2h8z9vl3__Cpq6rzGCsY"
 
@@ -37,92 +32,108 @@ class PlacesRepository {
         database = FirebaseDatabase.getInstance().reference
     }
 
-    fun getGooglePlaces(query: String): MutableLiveData<PlaceApiResponse> {
-        val placesData = MutableLiveData<PlaceApiResponse>()
-
-        googlePlacesApi?.getPlacesList(query, region = "es", language = "es", apiKey = ApiKey)?.enqueue(object : Callback<PlaceApiResponse> {
-            override fun onResponse(call: Call<PlaceApiResponse>, response: Response<PlaceApiResponse>) {
-                print("RESPONSE" + response.toString())
-
+    fun getGooglePlaces(query: String, completionHandler: (PlaceApiResponse<List<TOPlace>>?) -> Unit) {
+        googlePlacesApi?.getPlacesList(query, region = "es", language = "es", apiKey = ApiKey)?.enqueue(object : Callback<PlaceApiResponse<List<TOPlace>>> {
+            override fun onResponse(call: Call<PlaceApiResponse<List<TOPlace>>>, response: Response<PlaceApiResponse<List<TOPlace>>>) {
                 if (response.isSuccessful) {
-                    placesData.value = response.body()
-                    placesData.postValue(response.body())
+                    completionHandler(response.body())
                 }
             }
 
-            override fun onFailure(call: Call<PlaceApiResponse>, t: Throwable) {
-                placesData.value = null
+            override fun onFailure(call: Call<PlaceApiResponse<List<TOPlace>>>, t: Throwable) {
+                completionHandler(null)
             }
         })
-
-        return placesData
     }
 
-    fun createPlace(place: TOPlace) {
+    fun getGooglePlace(placeId: String, completionHandler: (PlaceApiResponse<TOPlace>?) -> Unit) {
+        googlePlacesApi?.getPlace(placeId, apiKey = ApiKey)?.enqueue(object : Callback<PlaceApiResponse<TOPlace>> {
+            override fun onResponse(
+                call: Call<PlaceApiResponse<TOPlace>>,
+                response: Response<PlaceApiResponse<TOPlace>>
+            ) {
+                completionHandler(response.body())
+            }
+
+            override fun onFailure(call: Call<PlaceApiResponse<TOPlace>>, t: Throwable) {
+                completionHandler(null)
+            }
+        })
+    }
+
+    fun getPlace(placeId: String, completionHandler: (TOPlace?) -> Unit) {
+        val placeRef = database.child("places").orderByChild("place_id").equalTo(placeId).limitToFirst(1)
+        placeRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val place = dataSnapshot.children.first().getValue(TOPlace::class.java)
+
+                completionHandler(place)
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                completionHandler(null)
+            }
+        })
+    }
+
+    fun createPlace(place: TOPlace, completionHandler: (Boolean) -> Unit) {
         val key = database.child("places").push().key
         if (key == null) {
             Log.w(TAG, "Couldn't get push key for posts")
             return
         }
 
+        place.id = key
         val placeValues = place.toMap()
 
         val childUpdates = HashMap<String, Any>()
-        childUpdates["/favouritePlaces/$key"] = placeValues
+        childUpdates["/places/$key"] = placeValues
 
-        database.updateChildren(childUpdates)
+        database.updateChildren(childUpdates) { _, _ ->
+            completionHandler(true)
+        }
     }
 
-    fun getPlaces(): MutableLiveData<List<TOPlace>> {
-        val placesData = MutableLiveData<List<TOPlace>>()
-
+    fun getPlaces(completionHandler: (MutableList<TOPlace>?) -> Unit) {
         val placesReference = database.child("places")
         placesReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val list : MutableList<TOPlace> = mutableListOf()
 
                 dataSnapshot.children.forEach {
-                    list.add(it.getValue(TOPlace::class.java)!!)
+                    it.getValue(TOPlace::class.java)?.let { newPlace ->
+                        list.add(newPlace)
+                    }
                 }
 
-                placesData.value = list
-                placesData.postValue(list)
+                completionHandler(list)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-
+                completionHandler(null)
             }
         })
-
-        return placesData
     }
 
-    fun getFavouritePlaces(): MutableLiveData<List<TOPlace>> {
-        val placesData = MutableLiveData<List<TOPlace>>()
-
+    fun getFavouritePlaces(completionHandler: (List<TOPlace>?) -> Unit) {
         val favouritePlacesRef = database.child("places").orderByChild("favourite").equalTo(true)
         favouritePlacesRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val list : MutableList<TOPlace> = mutableListOf()
 
                 dataSnapshot.children.forEach {
-                    list.add(it.getValue(TOPlace::class.java)!!)
+                    it.getValue(TOPlace::class.java)?.let { newPlace ->
+                        list.add(newPlace)
+                    }
                 }
-//                val place = dataSnapshot.getValue(TOPlace::class.java)
-//                if (place != null) {
-//                    list.add(place)
-//                }
 
-                placesData.value = list
-                placesData.postValue(list)
+                completionHandler(list)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-
+                completionHandler(null)
             }
         })
-
-        return placesData
     }
 
     fun setFavourite(place: TOPlace) {
@@ -160,4 +171,16 @@ class PlacesRepository {
         })
     }
 
+    fun createReview(review: Review, place: TOPlace, completionHandler: (TOPlace?) -> Unit) {
+        place.reviews?.add(review)
+        database.child("places").child(place.id).child("reviews").setValue(place.reviews)
+            .addOnSuccessListener {
+                Log.i(TAG, "Review added and Place updated.")
+                completionHandler(place)
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "Error updating Place reviews.")
+                completionHandler(null)
+            }
+    }
 }

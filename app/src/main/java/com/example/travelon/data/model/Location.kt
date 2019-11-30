@@ -1,7 +1,8 @@
 package com.example.travelon.data.model
 
-data class Location (
+import java.io.Serializable
 
-    val lat : Double,
-    val lng : Double
-)
+data class Location (
+    val lat : Double? = null,
+    val lng : Double? = null
+): Serializable
