@@ -46,8 +46,12 @@ class HomeViewModel : ViewModel() {
 
     fun filterPlaces(byName: String) {
         _filteredPlaces.apply {
-            value = mutablePlacesList.value?.filter {
-                it.name.toLowerCase().contains(byName.toLowerCase())
+            value = if (byName.isEmpty()) {
+                mutablePlacesList.value
+            } else {
+                mutablePlacesList.value?.filter {
+                    it.name.toLowerCase().contains(byName.toLowerCase())
+                }
             }
         }
     }

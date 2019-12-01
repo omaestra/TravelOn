@@ -1,16 +1,13 @@
 package com.example.travelon.ui.login
 
-import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Patterns
+import com.example.travelon.R
 import com.example.travelon.data.LoginRepository
 import com.example.travelon.data.Result
-
-import com.example.travelon.R
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 
 class LoginViewModel(private val loginRepository: LoginRepository) : ViewModel() {
 

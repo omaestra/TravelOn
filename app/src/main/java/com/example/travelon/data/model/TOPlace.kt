@@ -16,7 +16,8 @@ class TOPlace (
 	val types : List<String>? = null,
 	var favourite: Boolean = false,
 	var formatted_phone_number: String? = null,
-	var reviews: ArrayList<Review>? = null
+	var reviews: ArrayList<Review>? = null,
+	var user: String? = null
 ): Serializable {
 	@Exclude
 	fun toMap(): Map<String, Any?> {
@@ -31,6 +32,7 @@ class TOPlace (
 			"photos" to photos,
 			"formatted_phone_number" to formatted_phone_number,
 			"reviews" to reviews,
+			"user" to user,
 			"timestamp" to Date()
 		)
 	}

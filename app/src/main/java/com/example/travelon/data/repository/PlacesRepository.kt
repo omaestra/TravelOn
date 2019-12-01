@@ -7,6 +7,7 @@ import com.example.travelon.data.model.Review
 import com.example.travelon.data.model.TOPlace
 import com.example.travelon.services.GooglePlacesAPI
 import com.example.travelon.services.RetrofitService
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -83,6 +84,9 @@ class PlacesRepository {
             return
         }
 
+        val user = FirebaseAuth.getInstance().currentUser
+        place.user = user?.email
+
         place.id = key
         val placeValues = place.toMap()
 
@@ -116,14 +120,18 @@ class PlacesRepository {
     }
 
     fun getFavouritePlaces(completionHandler: (List<TOPlace>?) -> Unit) {
-        val favouritePlacesRef = database.child("places").orderByChild("favourite").equalTo(true)
+        val user = FirebaseAuth.getInstance().currentUser?.email ?: ""
+
+        val favouritePlacesRef = database.child("places")
+            .orderByChild("user")
+            .equalTo(user)
         favouritePlacesRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val list : MutableList<TOPlace> = mutableListOf()
 
                 dataSnapshot.children.forEach {
                     it.getValue(TOPlace::class.java)?.let { newPlace ->
-                        list.add(newPlace)
+                        if (newPlace.favourite) list.add(newPlace)
                     }
                 }
 
@@ -173,6 +181,7 @@ class PlacesRepository {
 
     fun createReview(review: Review, place: TOPlace, completionHandler: (TOPlace?) -> Unit) {
         place.reviews?.add(review)
+
         database.child("places").child(place.id).child("reviews").setValue(place.reviews)
             .addOnSuccessListener {
                 Log.i(TAG, "Review added and Place updated.")
