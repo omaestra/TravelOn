@@ -98,9 +98,7 @@ class HomeFragment : Fragment() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
-                if (newText.isEmpty()) {
-                    return false
-                }
+
                 viewModel.filterPlaces(newText)
 
                 return true

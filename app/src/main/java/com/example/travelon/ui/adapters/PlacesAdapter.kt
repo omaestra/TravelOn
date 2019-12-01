@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelon.R
+import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.place_row.view.*
 
@@ -62,10 +63,10 @@ class PlacesAdapter(
             itemView.placeNameText.text = place.name
             itemView.placeCityText.text = place.formatted_address
             itemView.placeCountryText.text = place.formatted_address
-            itemView.button_favorite.isChecked = place.favourite
+            itemView.button_favorite.isChecked = (place.favourite && FirebaseAuth.getInstance().currentUser?.email == place.user)
 
             place.photos?.first()?.photo_reference.let {
-                var imageUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${it}&key=$ApiKey"
+                val imageUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${it}&key=$ApiKey"
 
                 Picasso.get()
                     .load(imageUrl)

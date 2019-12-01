@@ -14,6 +14,7 @@ import android.widget.Toast
 
 import com.example.travelon.R
 import com.example.travelon.ui.login.LoginActivity
+import com.facebook.login.LoginManager
 
 class AboutFragment : Fragment() {
 
@@ -57,6 +58,7 @@ class AboutFragment : Fragment() {
         alertDialog.setPositiveButton("YES") { dialog, which ->
             // Write your code here to execute after dialog
             viewModel.signOut()
+            LoginManager.getInstance().logOut()
             val i = Intent(
                 activity,
                 LoginActivity::class.java

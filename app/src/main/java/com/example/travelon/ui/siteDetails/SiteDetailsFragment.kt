@@ -90,13 +90,13 @@ class SiteDetailsFragment : Fragment(), OnMapReadyCallback {
 
         this.createCommentButton.setOnClickListener {
             this.commentsText.clearFocus()
-            this.commentsText.text.clear()
 
             val review = this.createReview()
             val place = this.place?.let {
                 viewModel.createReview(it, review) { place ->
                     place?.let { updatedPlace ->
                         updateUI(updatedPlace)
+                        this.commentsText.text.clear()
                     }
                 }
             }
