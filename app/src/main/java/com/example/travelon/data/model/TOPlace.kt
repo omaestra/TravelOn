@@ -16,7 +16,7 @@ class TOPlace (
 	val types : List<String>? = null,
 	var favourite: Boolean = false,
 	var formatted_phone_number: String? = null,
-	var reviews: ArrayList<Review>? = null,
+	var reviews: ArrayList<Review>? = ArrayList(),
 	var user: String? = null
 ): Serializable {
 	@Exclude

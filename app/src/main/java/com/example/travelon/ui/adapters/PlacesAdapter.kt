@@ -1,5 +1,6 @@
 package com.example.travelon.ui.adapters
 
+import android.content.res.Resources
 import com.example.travelon.data.model.TOPlace
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,10 @@ class PlacesAdapter(
             onClickListener(view, place)
         }
 
+        holder.itemView.createPlaceButton.setOnClickListener { view ->
+            onClickListener(view, place)
+        }
+
         holder.itemView.button_favorite.setOnClickListener { view ->
             onFavouriteClickListener?.invoke(view, place)
         }
@@ -63,7 +68,7 @@ class PlacesAdapter(
             itemView.placeNameText.text = place.name
             itemView.placeCityText.text = place.formatted_address
             itemView.placeCountryText.text = place.formatted_address
-            itemView.button_favorite.isChecked = (place.favourite && FirebaseAuth.getInstance().currentUser?.email == place.user)
+            itemView.button_favorite.isChecked = (place.favourite /*&& FirebaseAuth.getInstance().currentUser?.email == place.user*/)
 
             place.photos?.first()?.photo_reference.let {
                 val imageUrl = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photoreference=${it}&key=$ApiKey"
